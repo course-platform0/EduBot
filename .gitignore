@@ -1,5 +1,46 @@
-*.pyc
+# Python
+*.py[cod]
 __pycache__/
+*.pyo
+*.pyc
+*.pyd
+
+# Virtual Environment
+env/
+venv/
+ENV/
+ENV/
+.venv/
+
+# Django
+*.log
+*.sqlite3
 db.sqlite3
-.env
-*.loggit init
+/static/
+media/
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Coverage
+.coverage
+htmlcov/
+.coverage.*
+
+# Test
+*.t*st
+*.pytest_cache/
+.tox/
+.nox/
+
+# Miscellaneous
+*.DS_Store
+*.tgz
+*.zip
+*.tar.gz
+Thumbs.db
+*.bak
+*.swp

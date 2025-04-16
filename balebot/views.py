@@ -19,24 +19,39 @@ from utils.utils import send_sms
 @csrf_exempt
 def get_updates(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
+        main_data = json.loads(request.body)
 
-        if "callback_query" in data:
-            chat_id = data["callback_query"]['message']['chat']['id']
-            data2 = data["callback_query"].get('data', "")
-            user_visit(chat_id, data2)
+        # اگر داده دریافتی از نوع callback_query باشد
+        # یعنی کاربر روی دکمه‌ای شیشه‌ای کلیک کرده است
+        if "callback_query" in main_data:
+           
 
+            chat_id = main_data["callback_query"]['message']['chat']['id']
+            message_id = main_data["callback_query"]['message']['message_id']
+            data = main_data["callback_query"].get('data', "")
+
+            isLogin = is_login(chat_id)
+            if "visit" in data:
+                user_visit(chat_id, data[5:])
+            elif data == "python_bootcamp":
+                get_python_bootcamp(chat_id, message_id)
+            elif "python_term" in data:
+                get_term(chat_id, data[11:])
+            elif "python_day" in data :
+                get_day(chat_id, data[10:])    
+            elif "back_main" == data:
+                get_start_action(chat_id, isLogin)    
         else:
 
             # پردازش پیام دریافتی
-            chat_id = data['message']['chat']['id']
-            text = data['message'].get('text', '')
-            name = data['message']['from'].get('firs_name', '')
+            chat_id = main_data['message']['chat']['id']
+            text = main_data['message'].get('text', '')
+            name = main_data['message']['from'].get('firs_name', '')
             contact = ''
             user_id = ''
             try:
-                contact = data['message']['contact'].get('phone_number', '')
-                user_id = data['message']['contact'].get('user_id', '')
+                contact = main_data['message']['contact'].get('phone_number', '')
+                user_id = main_data['message']['contact'].get('user_id', '')
             except KeyError as e:
                 pass
 
@@ -66,12 +81,12 @@ def get_updates(request):
                 else:
                     send_message(chat_id, "شما لاگین نیستید لطفا شماره خود را ارسال کنید.")
             elif "ترم" in text:
-                check_is_term(chat_id, text)
+                get_term(chat_id, text)
             elif "تمرین جلسات ۱ تا ۵" in text:
                 send_message(chat_id, "این تمرین را با دقت ببینید....\n\n   "
                                       "https://my.uupload.ir/p/5L5M2Oy8")
             elif "روز" in text:
-                check_is_day(chat_id, text)
+                get_day(chat_id, text)
             elif "بازگشت" in text:
                 if text == MAIN_BACK:
                     get_start_action(chat_id, isLogin)
@@ -157,23 +172,45 @@ def set_keyboard_markup(keyboard):
 
 
 def set_keyboard_inline(keyboard):
+    keyboard.append([{"text": "بازگشت به منوی اصلی", "callback_data": "back_main"}])
     return {'inline_keyboard': keyboard}
 
+
+def edit_message(chat_id, message_id, text, keyboard=None):
+    edit_message_url = f"https://tapi.bale.ai/bot{BALE_BOT_TOKEN}/editMessageText"
+    payload = {
+        'chat_id': chat_id,
+        'message_id': message_id,
+        'text': text,
+        'reply_markup': keyboard
+    }
+    requests.post(edit_message_url, json=payload)
+
+    return JsonResponse({'status': 'ok'})
 
 # ------------------------توابع مخصوص ربات -----------------------
 
 
 def get_start_action(chat_id, isLogin):
     if isLogin:
+        #todo balebot.py change 
+        BALE_MAIN_KEYBOARD_LOGINq = [
 
-        keyboard = set_keyboard_markup(BALE_MAIN_KEYBOARD_LOGIN)
+                    [{"text": "بوتکمپ پایتون", "callback_data":"python_bootcamp"}, {"text": "بوتکمپ کسب وکار", "callback_data":"business"}],
+                    [{"text": "بوتکمپ فضای مجازی", "callback_data":"onlinework"}],
+                    [{"text": "تمرین جلسات ۱ تا ۵", "callback_data":"tamrin1-5"}],
+                ]
+        keyboard = set_keyboard_inline(BALE_MAIN_KEYBOARD_LOGINq)
         send_message(chat_id, TEXT_WELCOME, keyboard)
+
     else:
+         #todo balebot.py change 
+
         keyboard = [
-            [{"text": "ثبت نام یا ورود  با همین شماره بله", "request_contact": True}],
-            [{"text": "ثبت نام با شماره دیگر"}, {"text": "ورود با شماره دیگر"}],
+            [{"text": "ثبت نام یا ورود  با همین شماره بله", "request_contact": True, "callback_data": "login-with-bale"}],
+            [{"text": "ثبت نام با شماره دیگر", "callback_data": "login"}, {"text": "ورود با شماره دیگر", "callback_data": "login"}],
         ]
-        keyboard = set_keyboard_markup(keyboard)
+        keyboard = set_keyboard_inline(keyboard)
         send_message(chat_id, TEXT_REGISTER, keyboard)
 
 
@@ -198,12 +235,12 @@ def is_login(chat_id):
 
 
 # توابع مربوط به اپلیکیشن آکادمی دانه کار
-def get_python_bootcamp(chat_id):
+def get_python_bootcamp(chat_id, message_id=None):
     products = Product.objects.all()
     keyboard = []
     row = []
     for i, product in enumerate(products):
-        my_dict = {'text': product.name}
+        my_dict = {'text': product.name, "callback_data": "python_term"+product.slug}
         row.append(my_dict)
         if len(row) == 2:
             keyboard.append(row)
@@ -212,19 +249,20 @@ def get_python_bootcamp(chat_id):
         elif i == len(products) - 1:
             keyboard.append(row)
             row = []
-    keyboard.append([{"text": "بازگشت به منوی اصلی"}])
-    keyboard = set_keyboard_markup(keyboard)
-    send_message(chat_id, "یکی از دوره‌های بوتکمپ را انتخاب کنید.", keyboard)
+    keyboard = set_keyboard_inline(keyboard)
+    if message_id is not None:
+        edit_message(chat_id, message_id, "یکی از ترمهای بوتکمپ را انتخاب کنید.", keyboard)
+    else:
+        send_message(chat_id, "یکی از ترمهای بوتکمپ را انتخاب کنید.", keyboard)
 
-
-def check_is_term(chat_id, text):
-    product = Product.objects.filter(name=text)
+def get_term(chat_id, text):
+    product = Product.objects.filter(slug=text)
     if product.exists():
         product_contents = ContentCategory.objects.filter(product=product[0])
         keyboard = []
         row = []
         for i, content in enumerate(product_contents):
-            my_dict = {'text': content.name}
+            my_dict = {'text': content.name, "callback_data": "python_day"+ str(content.id)}
             row.append(my_dict)
             if len(row) == 2:
                 keyboard.append(row)
@@ -233,14 +271,14 @@ def check_is_term(chat_id, text):
             elif i == len(product_contents) - 1:
                 keyboard.append(row)
                 row = []
-        keyboard.append([{"text": MAIN_BACK}, {"text": BACK_TO_PYTHON}])
+        
 
-        keyboard = set_keyboard_markup(keyboard)
-        send_message(chat_id, "یکی از دوره‌های بوتکمپ را انتخاب کنید.", keyboard)
+        keyboard = set_keyboard_inline(keyboard)
+        send_photo(chat_id, "یکی از روزهای بوتکمپ را انتخاب کنید.", content.product.logo , keyboard)
 
 
-def check_is_day(chat_id, text):
-    content_category = ContentCategory.objects.filter(name=text)
+def get_day(chat_id, text):
+    content_category = ContentCategory.objects.filter(id=text)
 
     if content_category.exists():
 
@@ -251,7 +289,7 @@ def check_is_day(chat_id, text):
             content_category_id = product_link.content_category_id
             link += (product_link.video_link + "\n\n ")
         keyboard = [
-            [{"text": "مشاهده کردم", "callback_data": str(content_category_id)}],
+            [{"text": "مشاهده کردم", "callback_data": "visit " + str(content_category_id)}],
         ]
         keyboard = set_keyboard_inline(keyboard)
         send_message(chat_id, link, keyboard)
