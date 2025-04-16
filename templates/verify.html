@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form method="post" class="row">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="form-control btn btn-primary" type="submit">ورود</button>
+    </form>
+
+    <hr>
+    <br>
+    <a href="{{ my_url }}&is_sms=1" class="text-center p-4 bg-info row">کد فعالسازی را sms کن</a>
+
+{% endblock %}

@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css"
+          integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'fonts/IRANSansWeb.ttf' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>آموزشگاه آنلاین دانه کار</title>
+    <style>
+        @font-face {
+            font-family: 'iryekan';
+            src: url('{% static 'fonts/IRANYekanRegular.ttf' %}') format('truetype'); /* مسیر به فایل فونت */
+        }
+
+        @font-face {
+            font-family: 'iryekanbold';
+            src: url('{% static 'fonts/IRANYekanBold.ttf' %}') format('truetype'); /* مسیر به فایل فونت */
+        }
+
+        @font-face {
+            font-family: 'iransans';
+            src: url('{% static 'fonts/IRANSansWeb.ttf' %}') format('truetype');
+        }
+
+        body {
+            font-family: 'iransans', serif;
+        }
+
+        .success {
+            margin: 10px;
+            border: 1px solid #7be85c;
+            background-color: #aeeaa5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .error {
+            margin: 10px;
+            border: 1px solid #f32e2e;
+            background-color: #eaa5a5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .warning {
+            margin: 10px;
+            border: 1px solid #ef986a;
+            background-color: #f1c7b1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .info {
+            margin: 10px;
+            border: 1px solid #44bdf1;
+            background-color: #a3d5ea;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- ***********header**********-->
+<!-- ستون‌ها در اینجا قرار می‌گیرند -->
+<div class="d-flex align-items-center justify-content-center mb-3">
+    <div class="row d-flex align-items-center justify-content-center container-xl">
+        <a class="col-8 col-xl-3 p-1 d-flex align-items-center justify-content-center btn" href="{% url 'home' %}">
+            <img style="width: 80%" src="{% static 'img/python.png' %}"
+                 alt="بوتکمپ پایتون دانه کار">
+        </a>
+
+        <h2 class="col-12 col-xl-5 text-center "
+            style="font-family:iryekanbold"> آکادمی آموزشی دانه‌کار
+        </h2>
+
+        {#        اگر کاربر لاگین بود باید بنویسیم حساب کاربری اگر لاگین نبود بنویسیم ثبت نام و ورود#}
+        {% if user.is_authenticated %}
+            <a class="col-4 col-xl-2 text-center  p-2 btn btn-primary m-2" href="{% url 'profile' %}"> ورود به
+                پروفایل</a>
+            <a class="col-3 col-xl-1 text-center  p-2 btn btn-primary" href="{% url 'logout' %}"> خروج </a>
+        {% else %}
+            <a class="col-4 col-xl-2 text-center  p-2 btn btn-primary m-2" href="{% url 'register' %}"> ثبت نام </a>
+            <a class="col-3 col-xl-1 text-center  p-2 btn btn-primary" href="{% url 'login' %}">ورود</a>
+        {% endif %}
+
+
+    </div>
+</div>
+
+<!-- ***********header**********-->
+
+{% if messages %}
+    {% for message in messages %}
+        <h5 {% if message.tags %} class="{{ message.tags }}  text-center container-xl m-auto" {% endif %}>
+            {{ message }}
+        </h5>
+
+    {% endfor %}
+
+{% endif %}
+
+<main>
+    {% block content %}
+        <!-- محتوا در اینجا قرار می‌گیرد -->
+    {% endblock %}
+</main>
+
+
+<footer class="mt-5" style="background-color: #131378">
+    <div class="row"
+         style="height: auto">
+        <div class="row col-12 col-xl-4 d-flex align-items-center justify-content-center">
+            <a class="col-12 col-xl-9 p-1 d-flex align-items-center justify-content-center btn" href="{% url 'home' %}">
+                <img style="width: 80%" class="img-fluid"
+                                 {# change #}
+
+                     src="{% static 'img/python.png' %}"
+                     alt="بوتکمپ پایتون دانه کار">
+            </a>
+            <p class="col-12 col-xl-10 p-1 d-flex align-items-center justify-content-center"
+               style="color: white;white-space: pre-line;">
+                سعی کردم همیشه با مــــردم زنـــدگی کنم.
+
+                مردم را دور نزنم و باهاشون شریـــک باشم.
+
+                رقیبشون نباشم،وسیله موفقـــــیتم نباشند.
+
+                بستر رشد و انتخاب بهتـــــــــرشون باشم.
+            </p>
+        </div>
+        <div class="row col-12 col-xl-4 d-flex align-items-center justify-content-center mt-2">
+            <h4 class="d-flex align-items-center justify-content-center m-2"
+                style="color: white;font-family: iryekanbold">کانــــــال‌های ارتباطی من👇</h4>
+            <a class="d-flex align-items-center justify-content-center m-2"
+               href="https://eitaa.com/joinchat/221184056C44f8eb2ac5" style="color: white">کانال ۴۰k+ مـعیــشت(ایتا)</a>
+            <a href="https://splus.ir/eghtesad_danekar" class="d-flex align-items-center justify-content-center m-2"
+               style="color: white">کانال ۳۰k+ معیشت(سروش)</a>
+            <a href="https://eitaa.com/python_danekar/163" class="d-flex align-items-center justify-content-center m-2"
+               style="color: white">کانال برنامه‌نویــــسی در ایتا</a>
+            <p class="d-flex align-items-center justify-content-center mt-3" style="color: white">ارتباط مستقیم با من
+                👇</p>
+            <div class="row col-6 d-flex align-items-center justify-content-center btn">
+                <a class="col-2 p-1 d-flex align-items-center justify-content-center btn"
+                   href="http://wa.me/+989128882737">
+                    <img style="width: 100%" class="img-fluid"
+                         src="https://www.jowhareh.com/images/Jowhareh/galleries_5/large_64126e2b-8808-468e-b2d2-7faa050a7f8a.webp"
+                         alt="واتساپ دانه کار">
+                </a>
+                <a class="col-2 p-1 d-flex align-items-center justify-content-center btn"
+                   href="eitaa.com/danekar_admin">
+                    <img style="width: 100%" class="img-fluid"
+                         src="https://s6.picofile.com/file/8389773534/04.png"
+                         alt="ایتای دانه کار">
+                </a>
+                <a class="col-2 p-1 d-flex align-items-center justify-content-center btn"
+                   href="t.me/stadmin">
+                    <img style="width: 100%" class="img-fluid rounded-circle"
+                         src="https://armcade.com/view/articleid/blogimage/portalid/0/w/500/url/articleimages/-logo-telegram.jpg"
+                         alt="تلگرام دانه کار">
+                </a>
+                <a class="col-2 p-1 d-flex align-items-center justify-content-center btn"
+                   href="rubika.ir/stadmin">
+                    <img style="width: 100%" class="img-fluid rounded-circle"
+                         src="https://asazoon.ir/product/VILOJMB/rivas/700/0/DtiZbKqqPU9i5fQ3C41T.jpg"
+                         alt="تلگرام دانه کار">
+                </a>
+            </div>
+        </div>
+        <div class="row col-12 col-xl-4 d-flex align-items-center justify-content-center">
+            <div class="col-4 d-flex align-items-center justify-content-center rounded m-3 pt-4 pb-4" style="background-color: aliceblue">
+                <a referrerpolicy='origin' target='_blank'
+                   href='https://trustseal.enamad.ir/?id=507692&Code=CJlXJap0UbA8r8BclNF3yAII90FeVVc2'><img
+                        referrerpolicy='origin'
+                        src='https://trustseal.enamad.ir/logo.aspx?id=507692&Code=CJlXJap0UbA8r8BclNF3yAII90FeVVc2'
+                        alt='' style='cursor:pointer' code='CJlXJap0UbA8r8BclNF3yAII90FeVVc2'></a>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+</body>
+</html>

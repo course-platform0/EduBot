@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3 class="text-center">لیست دوره‌ها</h3>
+    <div class="container-xl" >
+    <div class="row">
+        {% for product in products %}
+             <a class="col-4 p-1 " href="product/{{ product.slug }}" target="_blank">
+            <img class="rounded" style="width: 100%"  src="{{ product.logo }}"/>
+            </a>
+        {% endfor %}
+    </div>
+    </div>
+{% endblock %}
+

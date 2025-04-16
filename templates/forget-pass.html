@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="form-control btn btn-primary" type="submit">ارسال ایمیل کد فعالسازی</button>
+
+    </form>
+
+{% endblock %}

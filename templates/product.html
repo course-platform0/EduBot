@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {#--------    نوار بالایی صفحه پروداکت ساخته شد...----------#}
+    <div class="row" style="background-color: #161453">
+        <a class="col-12 col-xl-3 d-flex align-items-center justify-content-center">
+            <img style="width: 100%" src="{{ product.logo }}"/>
+        </a>
+        <div class="col-12 col-xl-9 row">
+            <b class="h3 text-center col-12 p-2" style="color: white">{{ product.name }}</b>
+            <p class=" text-start col-12 p-2" style="color: white;white-space: pre-line; ">{{ product.description }}</p>
+        </div>
+
+    </div>
+    {#--------    نوار بالایی صفحه پروداکت ساخته شد...----------#}
+
+    <div class="row ">
+
+        <div class="row col-12 col-xl-3">
+            {% if product.price > 0 %}
+                {% if is_purchased %}
+                    <b>این دوره برای شما فعال است</b>
+                {% else %}
+                    <a href="{% url 'pay' product.slug  %}" style="height: 90px;margin: 10px"
+                       class="btn btn-primary d-flex align-items-center justify-content-center rounded">با پرداخت مبلغ
+                        {{ product.price }}تومان عضو دوره شوید</a>
+                {% endif %}
+            {% else %}
+                <b>این دوره برای شما کاملا رایگان است</b>
+            {% endif %}
+        </div>
+
+
+        <div class="row col-12 col-xl-9">
+            <video class="mx-auto" width="100%" controls loop muted>
+                <source src="{{ product.video_intro }}" type="video/mp4">
+            </video>
+            <div style="padding: 20px">
+                <div  class="border border-secondary rounded-3 col-12 row m-2">
+                    <h4 class="text-start m-3">قراره چی یاد بگیریم؟</h4>
+                    <p style="white-space: pre-line;">{{ product.content_description }}</p>
+                </div>
+
+            </div>
+
+            {# ----------از اینجا به بعد قسمت ها بارگذاری می‌شوند----------- #}
+
+
+
+                {% for c_category in content_category %}
+                    <div class="accordion " id="accordionExample">
+                    <div class="accordion-item m-1">
+                        <h2 class="accordion-header" id="heading{{ c_category.id }}" >
+                            <button style="background-color: #fafafa;color: #131378" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ c_category.id }}" aria-expanded="false"
+                                    aria-controls="collapse{{ c_category.id }}">
+                                {{ c_category.name }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ c_category.id }}" class="accordion-collapse collapse "
+                             aria-labelledby="heading{{ c_category.id }}" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                                    {% for p_content in product_content %}
+                                        {% if p_content.content_category ==  c_category %}
+                                            {% if is_purchased %}
+                                                <li>
+                                                    <a style="color: #000d31" class="col border border-secondary rounded btn text-start m-2"
+                                                       href="{{ p_content.video_link }}" target="blank">
+                                                    {{ p_content.name }}
+                                                </a>
+                                                </li>
+                                            {% elif user.is_authenticated%}
+
+                                                    <div class="row d-flex align-items-center justify-content-center">
+                                                          <a style="color: #000d31"  class="col border border-secondary rounded btn text-start m-2">
+                                                        {{ p_content.name }}
+                                                    </a>
+                                                    <button class="lock-button btn btn-primary col-auto">
+                                                        <i class="fas fa-lock"></i>    شما باید خرید کنید
+                                                    </button>
+
+                                                    </div>
+                                            {% else %}
+                                                    <div class="row d-flex align-items-center justify-content-center">
+                                                    <a style="color: #000d31"  class="col border border-secondary rounded btn text-start m-2">
+                                                        {{ p_content.name }}
+                                                    </a>
+                                                    <a class="lock-button btn btn-primary col-auto" href="{% url 'login' %}">
+
+                                                        <i class="fas fa-lock"></i>    لطفا لاگین شوید
+
+                                                    </a>
+
+
+                                                    </div>
+
+
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                {% endfor %}
+                    </div>
+
+    </div>
+{% endblock %}
