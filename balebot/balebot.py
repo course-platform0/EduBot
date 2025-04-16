@@ -1,4 +1,4 @@
-BALE_BOT_TOKEN = "594328444:fAOvjeyIVXgxm9lUZHRURvRTb9BR3XbwIH34Hpgm"
+BALE_BOT_TOKEN = ""
 
 
 TEXT_WELCOME = "خوش آمدی از منوی زیر یک مسیر را انتخاب کن"

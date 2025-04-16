@@ -23,8 +23,7 @@ SECRET_KEY = 'django-insecure-i9(o@$vdh*x!)-!8=&b12u2-a31+-83os0$s0a*u47)-msi&dq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mgh21.ir', 'www.mgh21.ir', 'localhost', 'localhost:8000', '127.0.0.1', 'new.mgh21.ir',
-                 'www.new.mgh21.ir']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
