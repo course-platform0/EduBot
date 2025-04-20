@@ -5,7 +5,7 @@ from kavenegar import *
 
 # important data
 if True:
-    kave_Api = '4A2B6A5431722B516338792F504B35765173436377644630574E543139764330'
+    kave_Api = 'YOUR_KAVE_API'
 
 
 def send_email(to, subject, body):
